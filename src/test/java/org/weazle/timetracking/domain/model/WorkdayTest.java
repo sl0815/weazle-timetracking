@@ -20,6 +20,7 @@ public class WorkdayTest {
         TimeRecord record = new TimeRecord(now, TimeRecordType.START_WORK);
 
         Workday currentWorkday = new Workday(UUID.randomUUID(), LocalDate.now());
+        assertThat(currentWorkday.getCurrentState()).isEqualTo(WorkdayState.ABSENT);
         currentWorkday.addTimeRecord(record);
 
         assertThat(currentWorkday.getTimeRecordList()).size().isEqualTo(1);
