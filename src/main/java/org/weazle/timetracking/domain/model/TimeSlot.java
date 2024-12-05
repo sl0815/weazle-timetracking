@@ -5,6 +5,8 @@ import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
 import org.weazle.timetracking.domain.model.exceptions.TimeSlotOutOfBoundException;
 
+import java.time.temporal.ChronoUnit;
+
 public class TimeSlot {
 
     private TimeRecord startRecord;
@@ -25,6 +27,10 @@ public class TimeSlot {
 
     public TimeRecord getEndRecord() {
         return endRecord;
+    }
+
+    public long getHoursWorkedInMinutes() {
+        return ChronoUnit.MINUTES.between(startRecord.getRecordedTime(), endRecord.getRecordedTime());
     }
 
     void addEndTime(@NonNull final TimeRecord endRecord) throws TimeSlotOutOfBoundException {

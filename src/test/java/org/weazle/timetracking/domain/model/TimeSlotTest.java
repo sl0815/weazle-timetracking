@@ -92,4 +92,22 @@ public class TimeSlotTest {
                 .isInstanceOf(TimeSlotOutOfBoundException.class)
                 .hasMessage("Cannot add end time with record type START_WORK.");
     }
+
+    @Test
+    void testItShouldCalculateHoursWorkedCorrectly() throws TimeSlotOutOfBoundException {
+        ZonedDateTime rightNow = ZonedDateTime.now();
+        ZonedDateTime rightNowInThreeHoursAnd25Minutes = rightNow.plusHours(3).plusMinutes(25);
+
+        TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
+        TimeRecord endRecord = new TimeRecord(rightNowInThreeHoursAnd25Minutes, TimeRecordType.END_WORK);
+
+        TimeSlot timeSlot = new TimeSlot(startRecord, endRecord);
+
+        assertThat(timeSlot.getStartRecord()).isNotNull();
+        assertThat(timeSlot.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
+        assertThat(timeSlot.getEndRecord()).isNotNull();
+        assertThat(timeSlot.getEndRecord().getRecordedTime()).isEqualTo(rightNowInThreeHoursAnd25Minutes);
+
+        assertThat(timeSlot.getHoursWorkedInMinutes()).isEqualTo(205);
+    }
 }

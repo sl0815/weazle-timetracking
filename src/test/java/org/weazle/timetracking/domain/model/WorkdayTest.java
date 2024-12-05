@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
+import org.weazle.timetracking.domain.model.exceptions.TimeSlotOutOfBoundException;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WorkdayTest {
 
     @Test
-    void testItShouldAddAValidTimeRecordToAWorkday() {
+    void testItShouldAddAValidTimeRecordToAWorkday() throws TimeSlotOutOfBoundException {
         ZonedDateTime now = ZonedDateTime.now();
         TimeRecord record = new TimeRecord(now, TimeRecordType.START_WORK);
 
@@ -23,8 +24,8 @@ public class WorkdayTest {
         assertThat(currentWorkday.getCurrentState()).isEqualTo(WorkdayState.ABSENT);
         currentWorkday.addTimeRecord(record);
 
-        assertThat(currentWorkday.getTimeRecordList()).size().isEqualTo(1);
-        assertThat(currentWorkday.getTimeRecordList().getFirst().getRecordedTime()).isEqualTo(now);
-        assertThat(currentWorkday.getTimeRecordList().getFirst().getRecordType()).isEqualTo(TimeRecordType.START_WORK);
+        assertThat(currentWorkday.getTimeSlotList()).size().isEqualTo(1);
+        assertThat(currentWorkday.getTimeSlotList().getFirst().getStartRecord().getRecordedTime()).isEqualTo(now);
+        assertThat(currentWorkday.getTimeSlotList().getFirst().getStartRecord().getRecordType()).isEqualTo(TimeRecordType.START_WORK);
     }
 }
