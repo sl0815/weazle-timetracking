@@ -39,7 +39,7 @@ public class Workday {
         return timeSlotList;
     }
 
-    void addTimeRecord(@NonNull final TimeRecord record) throws TimeSlotOutOfBoundException {
+    public void recordTime(@NonNull final TimeRecord record) throws TimeSlotOutOfBoundException {
         if (record.getRecordType().equals(TimeRecordType.START_WORK)) {
             timeSlotList.add(new TimeSlot(record));
         } else {

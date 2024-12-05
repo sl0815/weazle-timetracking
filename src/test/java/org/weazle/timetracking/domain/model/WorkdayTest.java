@@ -22,7 +22,7 @@ public class WorkdayTest {
 
         Workday currentWorkday = new Workday(UUID.randomUUID(), LocalDate.now());
         assertThat(currentWorkday.getCurrentState()).isEqualTo(WorkdayState.ABSENT);
-        currentWorkday.addTimeRecord(record);
+        currentWorkday.recordTime(record);
 
         assertThat(currentWorkday.getTimeSlotList()).size().isEqualTo(1);
         assertThat(currentWorkday.getTimeSlotList().getFirst().getStartRecord().getRecordedTime()).isEqualTo(now);
