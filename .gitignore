@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Custom Docker settings ###
+.docker_volumes/
