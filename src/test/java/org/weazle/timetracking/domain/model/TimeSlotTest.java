@@ -1,7 +1,7 @@
 package org.weazle.timetracking.domain.model;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
 import org.weazle.timetracking.domain.model.exceptions.TimeSlotOutOfBoundException;
@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
+@JsonTest
 public class TimeSlotTest {
 
     @Test
