@@ -12,17 +12,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JsonTest
-public class TimeSlotTest {
+public class TimeSlotModelTest {
 
     @Test
     void testItShouldCreateATimeSlotContainingOnlyAValidStartTime() throws TimeSlotOutOfBoundException {
         ZonedDateTime rightNow = ZonedDateTime.now();
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
-        TimeSlot timeSlot = new TimeSlot(startRecord);
+        TimeSlotModel timeSlotModel = new TimeSlotModel(startRecord);
 
-        assertThat(timeSlot.getStartRecord()).isNotNull();
-        assertThat(timeSlot.getEndRecord()).isNull();
-        assertThat(timeSlot.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
+        assertThat(timeSlotModel.getStartRecord()).isNotNull();
+        assertThat(timeSlotModel.getEndRecord()).isNull();
+        assertThat(timeSlotModel.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
     }
 
     @Test
@@ -33,13 +33,13 @@ public class TimeSlotTest {
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
         TimeRecord endRecord = new TimeRecord(rightNowInThreeHours, TimeRecordType.END_WORK);
 
-        TimeSlot timeSlot = new TimeSlot(startRecord, endRecord);
+        TimeSlotModel timeSlotModel = new TimeSlotModel(startRecord, endRecord);
 
-        assertThat(timeSlot.getStartRecord()).isNotNull();
-        assertThat(timeSlot.getEndRecord()).isNotNull();
+        assertThat(timeSlotModel.getStartRecord()).isNotNull();
+        assertThat(timeSlotModel.getEndRecord()).isNotNull();
 
-        assertThat(timeSlot.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
-        assertThat(timeSlot.getEndRecord().getRecordedTime()).isEqualTo(rightNowInThreeHours);
+        assertThat(timeSlotModel.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
+        assertThat(timeSlotModel.getEndRecord().getRecordedTime()).isEqualTo(rightNowInThreeHours);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TimeSlotTest {
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
         TimeRecord endRecord = new TimeRecord(rightNowMinusThreeHours, TimeRecordType.END_WORK);
 
-        assertThatThrownBy(() -> new TimeSlot(startRecord, endRecord))
+        assertThatThrownBy(() -> new TimeSlotModel(startRecord, endRecord))
                 .isInstanceOf(TimeSlotOutOfBoundException.class)
                 .hasMessage("End time must be before start time.");
     }
@@ -62,8 +62,8 @@ public class TimeSlotTest {
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
 
         assertThatThrownBy(() -> {
-            TimeSlot timeSlot = new TimeSlot(startRecord);
-            timeSlot.addEndTime(new TimeRecord(rightNowMinusThreeHours, TimeRecordType.END_WORK));
+            TimeSlotModel timeSlotModel = new TimeSlotModel(startRecord);
+            timeSlotModel.addEndTime(new TimeRecord(rightNowMinusThreeHours, TimeRecordType.END_WORK));
         })
                 .isInstanceOf(TimeSlotOutOfBoundException.class)
                 .hasMessage("End time must be before start time.");
@@ -74,7 +74,7 @@ public class TimeSlotTest {
         ZonedDateTime rightNow = ZonedDateTime.now();
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.END_WORK);
 
-        assertThatThrownBy(() -> new TimeSlot(startRecord))
+        assertThatThrownBy(() -> new TimeSlotModel(startRecord))
                 .isInstanceOf(TimeSlotOutOfBoundException.class)
                 .hasMessage("Cannot create a new time slot with start record type END_WORK.");
     }
@@ -86,8 +86,8 @@ public class TimeSlotTest {
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
 
         assertThatThrownBy(() -> {
-            TimeSlot timeSlot = new TimeSlot(startRecord);
-            timeSlot.addEndTime(new TimeRecord(rightNowPlusThreeHours, TimeRecordType.START_WORK));
+            TimeSlotModel timeSlotModel = new TimeSlotModel(startRecord);
+            timeSlotModel.addEndTime(new TimeRecord(rightNowPlusThreeHours, TimeRecordType.START_WORK));
             })
                 .isInstanceOf(TimeSlotOutOfBoundException.class)
                 .hasMessage("Cannot add end time with record type START_WORK.");
@@ -101,13 +101,13 @@ public class TimeSlotTest {
         TimeRecord startRecord = new TimeRecord(rightNow, TimeRecordType.START_WORK);
         TimeRecord endRecord = new TimeRecord(rightNowInThreeHoursAnd25Minutes, TimeRecordType.END_WORK);
 
-        TimeSlot timeSlot = new TimeSlot(startRecord, endRecord);
+        TimeSlotModel timeSlotModel = new TimeSlotModel(startRecord, endRecord);
 
-        assertThat(timeSlot.getStartRecord()).isNotNull();
-        assertThat(timeSlot.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
-        assertThat(timeSlot.getEndRecord()).isNotNull();
-        assertThat(timeSlot.getEndRecord().getRecordedTime()).isEqualTo(rightNowInThreeHoursAnd25Minutes);
+        assertThat(timeSlotModel.getStartRecord()).isNotNull();
+        assertThat(timeSlotModel.getStartRecord().getRecordedTime()).isEqualTo(rightNow);
+        assertThat(timeSlotModel.getEndRecord()).isNotNull();
+        assertThat(timeSlotModel.getEndRecord().getRecordedTime()).isEqualTo(rightNowInThreeHoursAnd25Minutes);
 
-        assertThat(timeSlot.getHoursWorkedInMinutes()).isEqualTo(205);
+        assertThat(timeSlotModel.getHoursWorkedInMinutes()).isEqualTo(205);
     }
 }

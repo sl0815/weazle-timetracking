@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
-import org.weazle.timetracking.domain.entity.Calendar;
-import org.weazle.timetracking.domain.model.Workday;
+import org.weazle.timetracking.domain.entity.CalendarEntity;
+import org.weazle.timetracking.domain.model.WorkdayModel;
 import org.weazle.timetracking.domain.repository.CalendarRepository;
 import org.weazle.timetracking.domain.service.TimeTrackingImpl;
 
@@ -31,18 +31,25 @@ public class TimeTrackingController {
     }
 
     @GetMapping(value="/today", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Calendar> today() {
-        Calendar calendar = calendarRepository.findByActualDate(LocalDate.now());
-        return ResponseEntity.ok(calendar);
+    public ResponseEntity<CalendarEntity> today() {
+        CalendarEntity calendarEntity = calendarRepository.findByActualDate(LocalDate.now());
+        return ResponseEntity.ok(calendarEntity);
+    }
+
+    @PostMapping(value = "track-time", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WorkdayModel> recordTimeForNewWorkday(@RequestBody final TimeRecord record) {
+        WorkdayModel workdayModel = timeTrackingService.recordTime(null, record);
+
+        return ResponseEntity.ok(workdayModel);
     }
 
     @PostMapping(value = "track-time/{workdayUUID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Workday> recordTime(
+    public ResponseEntity<WorkdayModel> recordTime(
             @RequestBody final TimeRecord record,
             @PathVariable(required = false) UUID workdayUUID) {
 
-        Workday workday = timeTrackingService.recordTime(workdayUUID, record);
+        WorkdayModel workdayModel = timeTrackingService.recordTime(workdayUUID, record);
 
-        return ResponseEntity.ok(workday);
+        return ResponseEntity.ok(workdayModel);
     }
 }

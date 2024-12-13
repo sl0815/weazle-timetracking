@@ -3,47 +3,57 @@ package org.weazle.timetracking.domain.model;
 import org.springframework.lang.NonNull;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
+import org.weazle.timetracking.domain.entity.CalendarEntity;
+import org.weazle.timetracking.domain.entity.WorkdayEntity;
 import org.weazle.timetracking.domain.model.exceptions.TimeSlotOutOfBoundException;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Workday {
+public class WorkdayModel {
 
     private final UUID id;
-    private final LocalDate currentDate;
+    private final CalendarEntity calendarReference;
     private WorkdayState currentState;
-    private final List<TimeSlot> timeSlotList = new ArrayList<>();
+    private final List<TimeSlotModel> timeSlotModelList = new ArrayList<>();
 
-    public Workday(@NonNull final UUID id, @NonNull final LocalDate currentDate) {
+    public WorkdayModel(@NonNull final UUID id, @NonNull final CalendarEntity calendarReference) {
         this.id = id;
-        this.currentDate = currentDate;
+        this.calendarReference = calendarReference;
         this.currentState = WorkdayState.ABSENT; //Default state when creating a new workday
+    }
+
+    public WorkdayModel(@NonNull final WorkdayEntity workdayEntity) {
+        this.id = workdayEntity.getId();
+        this.calendarReference = workdayEntity.getCalendar();
+
+        workdayEntity.getTimeSlots().forEach(timeSlot -> {
+            timeSlotModelList.add(new TimeSlotModel(timeSlot));
+        });
     }
 
     public UUID getId() {
         return id;
     }
 
-    public LocalDate getCurrentDate() {
-        return currentDate;
+    public CalendarEntity getCalendarReference() {
+        return calendarReference;
     }
 
     public WorkdayState getCurrentState() {
         return currentState;
     }
 
-    public List<TimeSlot> getTimeSlotList() {
-        return timeSlotList;
+    public List<TimeSlotModel> getTimeSlotList() {
+        return timeSlotModelList;
     }
 
     public void recordTime(@NonNull final TimeRecord record) throws TimeSlotOutOfBoundException {
         if (record.getRecordType().equals(TimeRecordType.START_WORK)) {
-            timeSlotList.add(new TimeSlot(record));
+            timeSlotModelList.add(new TimeSlotModel(record));
         } else {
-            timeSlotList.getLast().addEndTime(record);
+            timeSlotModelList.getLast().addEndTime(record);
         }
 
         this.currentState =

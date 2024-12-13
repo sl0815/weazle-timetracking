@@ -3,22 +3,31 @@ package org.weazle.timetracking.domain.model;
 import org.springframework.lang.NonNull;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
+import org.weazle.timetracking.domain.entity.TimeSlotEntity;
 import org.weazle.timetracking.domain.model.exceptions.TimeSlotOutOfBoundException;
 
 import java.time.temporal.ChronoUnit;
 
-public class TimeSlot {
+public class TimeSlotModel {
 
     private TimeRecord startRecord;
     private TimeRecord endRecord;
 
-    public TimeSlot(@NonNull final TimeRecord startRecord) throws TimeSlotOutOfBoundException {
+    public TimeSlotModel(@NonNull final TimeRecord startRecord) throws TimeSlotOutOfBoundException {
         addStartRecord(startRecord);
     }
 
-    public TimeSlot(@NonNull final TimeRecord startRecord, @NonNull final TimeRecord endRecord) throws TimeSlotOutOfBoundException {
+    public TimeSlotModel(@NonNull final TimeRecord startRecord, @NonNull final TimeRecord endRecord) throws TimeSlotOutOfBoundException {
         addStartRecord(startRecord);
         addEndRecord(endRecord);
+    }
+
+    public TimeSlotModel(@NonNull final TimeSlotEntity timeSlotEntity) {
+        this.startRecord = new TimeRecord(timeSlotEntity.getStartDate(), TimeRecordType.START_WORK);
+
+        if (timeSlotEntity.getEndDate() != null) {
+            this.endRecord = new TimeRecord(timeSlotEntity.getEndDate(), TimeRecordType.START_WORK);
+        }
     }
 
     public TimeRecord getStartRecord() {
