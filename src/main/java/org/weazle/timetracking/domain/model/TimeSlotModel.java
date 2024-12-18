@@ -1,5 +1,6 @@
 package org.weazle.timetracking.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.NonNull;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
@@ -26,7 +27,7 @@ public class TimeSlotModel {
         this.startRecord = new TimeRecord(timeSlotEntity.getStartDate(), TimeRecordType.START_WORK);
 
         if (timeSlotEntity.getEndDate() != null) {
-            this.endRecord = new TimeRecord(timeSlotEntity.getEndDate(), TimeRecordType.START_WORK);
+            this.endRecord = new TimeRecord(timeSlotEntity.getEndDate(), TimeRecordType.END_WORK);
         }
     }
 
@@ -38,6 +39,7 @@ public class TimeSlotModel {
         return endRecord;
     }
 
+    @JsonIgnore
     public long getHoursWorkedInMinutes() {
         return ChronoUnit.MINUTES.between(startRecord.getRecordedTime(), endRecord.getRecordedTime());
     }

@@ -57,9 +57,9 @@ public class WorkdayImpl implements WorkdayService {
                             timeSlotEntity.setWorkday(workdayEntity);
                             timeSlotEntity.setStartDate(timeSlotModel.getStartRecord().getRecordedTime());
 
-                            if (timeSlotModel.getEndRecord() != null) {
-                                timeSlotEntity.setEndDate(timeSlotModel.getEndRecord().getRecordedTime());
-                            }
+//                            if (timeSlotModel.getEndRecord() != null) {
+//                                timeSlotEntity.setEndDate(timeSlotModel.getEndRecord().getRecordedTime());
+//                            }
 
                             return timeSlotEntity;
                         })

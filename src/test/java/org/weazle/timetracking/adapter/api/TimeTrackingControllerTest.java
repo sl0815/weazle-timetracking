@@ -7,25 +7,45 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.weazle.timetracking.adapter.api.model.TimeRecord;
+import org.weazle.timetracking.adapter.api.model.TimeRecordType;
+import org.weazle.timetracking.domain.entity.WorkdayEntity;
+import org.weazle.timetracking.domain.repository.WorkdayRepository;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.with;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = "testcontainer")
+@Transactional
 public class TimeTrackingControllerTest {
 
     @LocalServerPort
     private Integer serverPort;
+
+    @NonNull final WorkdayRepository workdayRepository;
+
+    @Autowired
+    public TimeTrackingControllerTest(@NonNull final WorkdayRepository workdayRepository) {
+        this.workdayRepository = workdayRepository;
+    }
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:17-alpine"
@@ -55,6 +75,8 @@ public class TimeTrackingControllerTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
+
+
     @Test
     void testTheReturnValueForTodayMustMatchTheCurrentDate() {
         LocalDate today = LocalDate.now();
@@ -70,5 +92,28 @@ public class TimeTrackingControllerTest {
             .body("nameOfMonth", Matchers.any(String.class))
             .body("weekDay", Matchers.any(String.class))
             .body("isWeekday", Matchers.any(Boolean.class));
+    }
+
+    @Test
+    void testItMustRecordTheTimeOnANewWorkDay() {
+        ZonedDateTime now = ZonedDateTime.now();
+        TimeRecord timeRecord = new TimeRecord(now, TimeRecordType.START_WORK);
+
+        String workdayUUIDString = with()
+            .body(timeRecord)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+            .post("/api/track-time")
+        .then()
+            .contentType(ContentType.JSON)
+            .statusCode(HttpStatus.OK.value())
+            .body("id", Matchers.any(String.class))
+            .body("currentState", Matchers.equalTo("PRESENT"))
+        .extract().path("id");
+
+        WorkdayEntity workday = workdayRepository.getReferenceById(UUID.fromString(workdayUUIDString));
+
+        assertThat(workday).isNotNull();
+        assertThat(workday.getTimeSlots()).hasSize(1);
     }
 }
