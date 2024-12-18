@@ -1,5 +1,7 @@
 package org.weazle.timetracking.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.lang.NonNull;
 
@@ -25,7 +27,32 @@ public class CalendarEntity {
     @Column(name = "is_weekday")
     private boolean isWeekday;
 
-   public CalendarEntity(@NonNull final LocalDate actualDate) {
-       this.actualDate = actualDate;
-   }
+    public CalendarEntity(@NonNull final LocalDate actualDate) {
+        this.actualDate = actualDate;
+    }
+
+    public CalendarEntity() {
+    }
+
+    @JsonIgnore
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDate getActualDate() {
+        return actualDate;
+    }
+
+    public String getNameOfMonth() {
+        return nameOfMonth;
+    }
+
+    public String getWeekDay() {
+        return weekDay;
+    }
+
+    @JsonProperty("isWeekday")
+    public boolean isWeekday() {
+        return isWeekday;
+    }
 }

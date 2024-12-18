@@ -19,7 +19,6 @@ public class TimeTrackingController {
 
     @NonNull
     private final TimeTrackingImpl timeTrackingService;
-    
     @NonNull
     private final CalendarRepository calendarRepository;
 
