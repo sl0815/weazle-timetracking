@@ -27,7 +27,9 @@ public class TimeTrackingImpl implements TimeTrackingService {
 
     @Override
     public WorkdayModel recordTimeForWorkday(@NonNull final UUID workdayUUID, @NonNull final TimeRecord timeRecord) {
-        return null;
+        WorkdayModel workdayModel = workdayService.getWorkdayByUUID(workdayUUID);
+
+        return updateWorkday(timeRecord, workdayModel);
     }
 
     private WorkdayModel updateWorkday(@NonNull final TimeRecord record, @NonNull final WorkdayModel workdayModel) {
