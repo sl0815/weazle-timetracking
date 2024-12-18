@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface WorkdayService {
     WorkdayModel getWorkdayByUUID(@NonNull final UUID workdayId);
-    WorkdayModel createWorkday();
+    WorkdayModel createNewWorkday();
     void updateWorkday(@NonNull final WorkdayModel workday);
 }

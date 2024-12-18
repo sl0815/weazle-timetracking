@@ -19,6 +19,7 @@ public class TimeTrackingController {
 
     @NonNull
     private final TimeTrackingImpl timeTrackingService;
+    
     @NonNull
     private final CalendarRepository calendarRepository;
 
@@ -30,25 +31,36 @@ public class TimeTrackingController {
         this.calendarRepository = calendarRepository;
     }
 
-    @GetMapping(value="/today", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(
+            value="/today",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<CalendarEntity> today() {
         CalendarEntity calendarEntity = calendarRepository.findByActualDate(LocalDate.now());
         return ResponseEntity.ok(calendarEntity);
     }
 
-    @PostMapping(value = "track-time", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/track-time",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<WorkdayModel> recordTimeForNewWorkday(@RequestBody final TimeRecord record) {
-        WorkdayModel workdayModel = timeTrackingService.recordTime(null, record);
+        WorkdayModel workdayModel = timeTrackingService.recordTime(record);
 
         return ResponseEntity.ok(workdayModel);
     }
 
-    @PostMapping(value = "track-time/{workdayUUID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/track-time-for-workday/{workdayUUID}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<WorkdayModel> recordTime(
             @RequestBody final TimeRecord record,
             @PathVariable(required = false) UUID workdayUUID) {
 
-        WorkdayModel workdayModel = timeTrackingService.recordTime(workdayUUID, record);
+        WorkdayModel workdayModel = timeTrackingService.recordTimeForWorkday(workdayUUID, record);
 
         return ResponseEntity.ok(workdayModel);
     }

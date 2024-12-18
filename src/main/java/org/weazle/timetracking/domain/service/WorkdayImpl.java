@@ -37,7 +37,7 @@ public class WorkdayImpl implements WorkdayService {
     }
 
     @Override
-    public WorkdayModel createWorkday() {
+    public WorkdayModel createNewWorkday() {
         CalendarEntity calendarEntity = calendarRepository.findByActualDate(LocalDate.now());
 
         return new WorkdayModel(UUID.randomUUID(), calendarEntity);

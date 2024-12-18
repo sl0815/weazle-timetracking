@@ -1,7 +1,6 @@
 package org.weazle.timetracking.domain.service;
 
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.domain.model.WorkdayModel;
@@ -20,13 +19,18 @@ public class TimeTrackingImpl implements TimeTrackingService {
     }
 
     @Override
-    public WorkdayModel recordTime(@Nullable UUID workdayUUID, @NonNull final TimeRecord record) {
-        WorkdayModel workdayModel = null;
+    public WorkdayModel recordTime(@NonNull final TimeRecord record) {
+        WorkdayModel workdayModel = workdayService.createNewWorkday();
 
-        if (workdayUUID == null) {
-            workdayModel = workdayService.createWorkday();
-        }
+        return updateWorkday(record, workdayModel);
+    }
 
+    @Override
+    public WorkdayModel recordTimeForWorkday(@NonNull final UUID workdayUUID, @NonNull final TimeRecord timeRecord) {
+        return null;
+    }
+
+    private WorkdayModel updateWorkday(@NonNull final TimeRecord record, @NonNull final WorkdayModel workdayModel) {
         try {
             workdayModel.recordTime(record);
         } catch (TimeSlotOutOfBoundException e) {

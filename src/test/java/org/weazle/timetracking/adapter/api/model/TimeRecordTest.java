@@ -1,11 +1,9 @@
-package org.weazle.timetracking.adapter.api;
+package org.weazle.timetracking.adapter.api.model;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
-import org.weazle.timetracking.adapter.api.model.TimeRecord;
-import org.weazle.timetracking.adapter.api.model.TimeRecordType;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
