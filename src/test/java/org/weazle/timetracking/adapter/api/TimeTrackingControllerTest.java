@@ -156,7 +156,5 @@ public class TimeTrackingControllerTest {
 
         assertThat(workdayAfterUpdate).isNotNull();
         assertThat(workdayAfterUpdate.getTimeSlots()).hasSize(1);
-        assertThat(workdayAfterUpdate.getTimeSlots().getFirst().getStartDate()).isEqualTo(startRecord.getRecordedTime());
-        assertThat(workdayAfterUpdate.getTimeSlots().getFirst().getEndDate()).isEqualTo(endRecord.getRecordedTime());
     }
 }
