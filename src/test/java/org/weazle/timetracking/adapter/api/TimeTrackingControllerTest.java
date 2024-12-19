@@ -21,6 +21,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.weazle.timetracking.adapter.api.model.TimeRecord;
 import org.weazle.timetracking.adapter.api.model.TimeRecordType;
 import org.weazle.timetracking.domain.entity.WorkdayEntity;
+import org.weazle.timetracking.domain.repository.CalendarRepository;
 import org.weazle.timetracking.domain.repository.WorkdayRepository;
 
 import java.time.LocalDate;
@@ -41,10 +42,14 @@ public class TimeTrackingControllerTest {
     private Integer serverPort;
 
     @NonNull final WorkdayRepository workdayRepository;
+    @NonNull final CalendarRepository calendarRepository;
 
     @Autowired
-    public TimeTrackingControllerTest(@NonNull final WorkdayRepository workdayRepository) {
+    public TimeTrackingControllerTest(
+            @NonNull final WorkdayRepository workdayRepository,
+            @NonNull final CalendarRepository calendarRepository) {
         this.workdayRepository = workdayRepository;
+        this.calendarRepository = calendarRepository;
     }
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
@@ -115,5 +120,43 @@ public class TimeTrackingControllerTest {
 
         assertThat(workday).isNotNull();
         assertThat(workday.getTimeSlots()).hasSize(1);
+    }
+
+    @Test
+    void testItMustRecordTimesForAnAlreadyExistingWorkday() {
+        ZonedDateTime now = ZonedDateTime.now();
+        TimeRecord startRecord = new TimeRecord(now, TimeRecordType.START_WORK);
+        TimeRecord endRecord = new TimeRecord(now.plusHours(3), TimeRecordType.END_WORK);
+
+        String workdayUUIDString = with()
+                .body(startRecord)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/api/track-time")
+                .then()
+                .contentType(ContentType.JSON)
+                .statusCode(HttpStatus.OK.value())
+                .body("id", Matchers.any(String.class))
+                .body("currentState", Matchers.equalTo("PRESENT"))
+                .extract().path("id");
+
+        with()
+            .body(endRecord)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/api/track-time-for-workday/" + workdayUUIDString)
+            .then()
+            .contentType(ContentType.JSON)
+            .statusCode(HttpStatus.OK.value())
+            .body("id", Matchers.any(String.class))
+            .body("currentState", Matchers.equalTo("ABSENT"))
+            .extract().path("id");
+
+        WorkdayEntity workdayAfterUpdate = workdayRepository.getReferenceById(UUID.fromString(workdayUUIDString));
+
+        assertThat(workdayAfterUpdate).isNotNull();
+        assertThat(workdayAfterUpdate.getTimeSlots()).hasSize(1);
+        assertThat(workdayAfterUpdate.getTimeSlots().getFirst().getStartDate()).isEqualTo(startRecord.getRecordedTime());
+        assertThat(workdayAfterUpdate.getTimeSlots().getFirst().getEndDate()).isEqualTo(endRecord.getRecordedTime());
     }
 }

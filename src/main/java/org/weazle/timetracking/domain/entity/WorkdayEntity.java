@@ -1,6 +1,7 @@
 package org.weazle.timetracking.domain.entity;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,13 @@ public class WorkdayEntity {
 
     @OneToMany(mappedBy = "workday", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimeSlotEntity> timeSlotEntities;
+
+    public WorkdayEntity() {}
+
+    public WorkdayEntity(@NonNull final UUID id, @NonNull final CalendarEntity calendarEntity) {
+        this.id = id;
+        this.calendarEntity = calendarEntity;
+    }
 
     public UUID getId() {
         return id;

@@ -45,10 +45,8 @@ public class WorkdayImpl implements WorkdayService {
 
     @Override
     public void updateWorkday(WorkdayModel workdayModel) {
-        WorkdayEntity workdayEntity = new WorkdayEntity();
+        WorkdayEntity workdayEntity = new WorkdayEntity(workdayModel.getId(), workdayModel.getCalendarReference());
 
-        workdayEntity.setId(workdayModel.getId());
-        workdayEntity.setCalendar(workdayModel.getCalendarReference());
         workdayEntity.setTimeSlots(
                 workdayModel.getTimeSlotList().stream()
                         .map(timeSlotModel -> {
@@ -57,9 +55,9 @@ public class WorkdayImpl implements WorkdayService {
                             timeSlotEntity.setWorkday(workdayEntity);
                             timeSlotEntity.setStartDate(timeSlotModel.getStartRecord().getRecordedTime());
 
-//                            if (timeSlotModel.getEndRecord() != null) {
-//                                timeSlotEntity.setEndDate(timeSlotModel.getEndRecord().getRecordedTime());
-//                            }
+                            if (timeSlotModel.getEndRecord() != null) {
+                                timeSlotEntity.setEndDate(timeSlotModel.getEndRecord().getRecordedTime());
+                            }
 
                             return timeSlotEntity;
                         })
