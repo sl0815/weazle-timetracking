@@ -1,4 +1,4 @@
-# WeazleTimeTracking Applincation
+# WeazleTimeTracking Application
 
 Time tracking for the rest of us.
 
