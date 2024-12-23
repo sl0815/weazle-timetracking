@@ -1,4 +1,4 @@
-name: Build the WeazleTimeTrackingApplication
+name: Build
 
 on:
   push:
