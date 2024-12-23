@@ -1,5 +1,8 @@
 # WeazleTimeTracking Application
 
+![Build Badge](https://github.com/sl0815/weazle-timetracking/actions/workflows/build.yml/badge.svg?branch=main)
+
+
 Time tracking for the rest of us.
 
 ## Local Development with podman
