@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import Clock from '../Clock.vue'
+import TimeTrackingClock from '../TimeTrackingClock.vue'
 
-describe('Clock', () => {
+describe('TimeTrackingClock', () => {
   it('renders properly', async () => {
-    const wrapper = mount(Clock)
+    const wrapper = mount(TimeTrackingClock)
     const today = new Date()
     const h = today.getHours()
 

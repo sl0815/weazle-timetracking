@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Home from '../components/Home.vue'
+import HomeContainer from '../components/HomeContainer.vue'
 </script>
 
 <template>
   <main>
-    <Home />
+    <HomeContainer />
   </main>
 </template>
