@@ -1,5 +1,7 @@
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+const time = ref('')
+
 function startTime() {
   const today = new Date()
   const h = today.getHours()
@@ -7,14 +9,14 @@ function startTime() {
   let s = today.getSeconds()
   m = checkTime(m)
   s = checkTime(s)
-  document.getElementById('clock').innerHTML = h + ':' + m + ':' + s
+  time.value = h + ':' + m + ':' + s
   setTimeout(startTime, 1000)
 }
 
 function checkTime(i) {
   if (i < 10) {
     i = '0' + i
-  } // add zero in front of numbers < 10
+  }
   return i
 }
 
@@ -24,5 +26,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="clock"></div>
+  <div id="clock">{{ time }}</div>
 </template>
