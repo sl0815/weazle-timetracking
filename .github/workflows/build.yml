@@ -7,24 +7,6 @@ on:
     branches: ["main"]
 
 jobs:
-  build-backend:
-    name: Build the Java Backend
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 23
-        uses: actions/setup-java@v4
-        with:
-          java-version: "23"
-          distribution: "temurin"
-          cache: maven
-          cache-dependency-path: "./backend/pom.xml"
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-
   build-frontend:
     name: Build the VueJS Frontend
     runs-on: ubuntu-latest
@@ -40,9 +22,10 @@ jobs:
           cache: "npm"
           cache-dependency-path: "frontend/package-lock.json"
       - run: npm ci
+      - run: npm run test:unit
       - run: npm run build --if-present
 
-  analyze-backend:
+  build-backend:
     name: Build and analyze
     needs: build-backend
     runs-on: ubuntu-latest
